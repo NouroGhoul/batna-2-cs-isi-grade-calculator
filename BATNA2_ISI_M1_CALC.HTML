@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batna University Grade Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .university-logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            z-index: 1;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+        }
+        
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 15px;
+            margin-right: 20px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .results {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+        
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .module-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .module-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .module-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .module-coeff {
+            background: var(--secondary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .module-grades {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        
+        .grade-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .grade-input label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid var(--secondary);
+        }
+        
+        .average-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+            color: var(--primary);
+        }
+        
+        .result-message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .pass {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+        }
+        
+        .fail {
+            background: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+        }
+        
+        .grade-summary {
+            margin-top: 25px;
+        }
+        
+        .grade-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .grade-row:last-child {
+            border-bottom: none;
+        }
+        
+        .grade-module {
+            font-weight: 500;
+        }
+        
+        .grade-value {
+            font-weight: 600;
+        }
+        
+        .grade-pass {
+            color: var(--success);
+        }
+        
+        .grade-fail {
+            color: var(--danger);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .controls {
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="university-logo">
+                <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/c/cd/Universit%C3%A9_de_Batna_2-Mostefa_Ben_Boulaid.png/250px-Universit%C3%A9_de_Batna_2-Mostefa_Ben_Boulaid.png" alt="Batna 2 University Logo" style="width:70px; height:70px; border-radius:50%; object-fit:cover;">
+            </div>
+            <h1>Batna 2 cs isi master 1 Calculator</h1>
+            <p>Calculate your semester average for ISI group</p>
+        </header>
+        
+        <div class="content">
+            <div class="controls">
+                <h2>Semester Information</h2>
+                
+                <div class="form-group">
+                    <label for="semester">Select Semester</label>
+                    <select id="semester">
+                        <option value="s1">S1: First Semester</option>
+                        <option value="s2">S2: Second Semester</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Enter Module Grades (0-20)</label>
+                    <div class="module-list" id="moduleList">
+                    </div>
+                </div>
+                
+                <button id="calculateBtn">Calculate Average</button>
+            </div>
+            
+            <div class="results">
+                <h2>Results</h2>
+                
+                <div class="result-card">
+                    <h3>Final Average</h3>
+                    <div class="average-value" id="averageValue">-</div>
+                    <div class="result-message" id="resultMessage">Enter grades to calculate</div>
+                </div>
+                
+                <div class="grade-summary">
+                    <h3>Module Summary</h3>
+                    <div id="gradeSummary">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modules = {
+            s1: [
+                { name: "Systèmes Répartis et Programmation Concurrente", coeff: 3, td: true, tp: true },
+                { name: "Systèmes de Gestion des Bases de Données Avancées", coeff: 3, td: true, tp: true },
+                { name: "Réseaux avancés", coeff: 3, td: true, tp: true },
+                { name: "Analyse et Conception des Systèmes Informatiques", coeff: 3, td: true, tp: true },
+                { name: "Gestion de Projets avancé", coeff: 2, td: true, tp: true },
+                { name: "Anglais 1", coeff: 2, td: false, tp: false },
+                { name: "Ethique académique", coeff: 1, td: false, tp: false }
+            ],
+            s2: [
+                { name: "Construction d'applications réparties", coeff: 3, td: true, tp: true },
+                { name: "Fondements des systèmes temps réel", coeff: 3, td: true, tp: true },
+                { name: "Systèmes intelligents distribués", coeff: 3, td: true, tp: true },
+                { name: "Ingénierie des connaissances", coeff: 3, td: true, tp: false },
+                { name: "Analyse de performances", coeff: 2, td: false, tp: true },
+                { name: "Anglais 2", coeff: 2, td: false, tp: false },
+                { name: "Réglementation des TIC", coeff: 1, td: false, tp: false }
+            ]
+        };
+
+        const semesterSelect = document.getElementById('semester');
+        const moduleList = document.getElementById('moduleList');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const averageValue = document.getElementById('averageValue');
+        const resultMessage = document.getElementById('resultMessage');
+        const gradeSummary = document.getElementById('gradeSummary');
+
+        function initApp() {
+            loadModules();
+            semesterSelect.addEventListener('change', loadModules);
+            calculateBtn.addEventListener('click', calculateGrades);
+        }
+
+        function loadModules() {
+            const semester = semesterSelect.value;
+            const semesterModules = modules[semester];
+            
+            moduleList.innerHTML = '';
+            
+            semesterModules.forEach((module, index) => {
+                const moduleEl = document.createElement('div');
+                moduleEl.className = 'module-item';
+                moduleEl.innerHTML = `
+                    <div class="module-header">
+                        <div class="module-title">${module.name}</div>
+                        <div class="module-coeff">Coeff: ${module.coeff}</div>
+                    </div>
+                    <div class="module-grades">
+                        <div class="grade-input">
+                            <label for="exam${index}">Exam (60%)</label>
+                            <input type="number" id="exam${index}" min="0" max="20" step="0.1" placeholder="0-20" required>
+                        </div>
+                        ${module.td ? `
+                        <div class="grade-input">
+                            <label for="td${index}">TD (${module.tp ? '20%' : '40%'})</label>
+                            <input type="number" id="td${index}" min="0" max="20" step="0.1" placeholder="0-20" required>
+                        </div>` : ''}
+                        ${module.tp ? `
+                        <div class="grade-input">
+                            <label for="tp${index}">TP (${module.td ? '20%' : '40%'})</label>
+                            <input type="number" id="tp${index}" min="0" max="20" step="0.1" placeholder="0-20" required>
+                        </div>` : ''}
+                        ${!module.td && !module.tp ? `
+                        <div class="grade-input">
+                            <label for="cont${index}">Continuous (40%)</label>
+                            <input type="number" id="cont${index}" min="0" max="20" step="0.1" placeholder="0-20" required>
+                        </div>` : ''}
+                    </div>
+                `;
+                moduleList.appendChild(moduleEl);
+            });
+        }
+
+        function calculateModuleGrade(module, grades) {
+            let total = grades.exam * 0.6;
+            
+            if (module.td && module.tp) {
+                total += (grades.td * 0.2) + (grades.tp * 0.2);
+            } else if (module.td) {
+                total += grades.td * 0.4;
+            } else if (module.tp) {
+                total += grades.tp * 0.4;
+            } else {
+                total += grades.cont * 0.4;
+            }
+            
+            return total;
+        }
+
+        function calculateGrades() {
+            const semester = semesterSelect.value;
+            const semesterModules = modules[semester];
+            
+            let totalWeighted = 0;
+            let totalCoeff = 0;
+            const results = [];
+            let allValid = true;
+            
+            gradeSummary.innerHTML = '';
+            
+            semesterModules.forEach((module, index) => {
+                const exam = parseFloat(document.getElementById(`exam${index}`).value) || 0;
+                
+                if (exam < 0 || exam > 20) {
+                    alert(`Invalid exam grade for ${module.name}. Must be between 0-20.`);
+                    allValid = false;
+                    return;
+                }
+                
+                const td = module.td ? parseFloat(document.getElementById(`td${index}`).value) || 0 : 0;
+                const tp = module.tp ? parseFloat(document.getElementById(`tp${index}`).value) || 0 : 0;
+                const cont = (!module.td && !module.tp) ? 
+                    parseFloat(document.getElementById(`cont${index}`).value) || 0 : 0;
+                
+                if (module.td && (td < 0 || td > 20)) {
+                    alert(`Invalid TD grade for ${module.name}. Must be between 0-20.`);
+                    allValid = false;
+                    return;
+                }
+                
+                if ((module.tp && (tp < 0 || tp > 20))) {
+                    alert(`Invalid TP grade for ${module.name}. Must be between 0-20.`);
+                    allValid = false;
+                    return;
+                }
+                
+                if ((!module.td && !module.tp) && (cont < 0 || cont > 20)) {
+                    alert(`Invalid continuous grade for ${module.name}. Must be between 0-20.`);
+                    allValid = false;
+                    return;
+                }
+                
+                const grades = { exam, td, tp, cont };
+                const grade = calculateModuleGrade(module, grades);
+                const weightedGrade = grade * module.coeff;
+                
+                totalWeighted += weightedGrade;
+                totalCoeff += module.coeff;
+                
+                results.push({
+                    name: module.name,
+                    grade: grade,
+                    weighted: weightedGrade,
+                    coeff: module.coeff,
+                    passed: grade >= 10
+                });
+            });
+            
+            if (!allValid) return;
+            
+            const average = totalWeighted / totalCoeff;
+            
+            averageValue.textContent = average.toFixed(2);
+            
+            if (average >= 10) {
+                resultMessage.textContent = "Congratulations! You passed the semester.";
+                resultMessage.className = "result-message pass";
+            } else {
+                resultMessage.textContent = "Unfortunately, you did not pass the semester.";
+                resultMessage.className = "result-message fail";
+            }
+            
+            results.forEach(result => {
+                const row = document.createElement('div');
+                row.className = 'grade-row';
+                row.innerHTML = `
+                    <div class="grade-module">${result.name}</div>
+                    <div class="grade-value ${result.passed ? 'grade-pass' : 'grade-fail'}">
+                        ${result.grade.toFixed(2)}/20
+                    </div>
+                `;
+                gradeSummary.appendChild(row);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
+
+<!--
+Copyright (c) 2025 [https://github.com/NouroGhoul]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
