@@ -1,7 +1,5 @@
 # Batna2 University Grade Calculator - CS ISI Master 1
 
-![Calculator Preview](screenshots/preview.png)
-
 ## Overview
 
 This web application calculates semester averages for CS/ISI Master 1 students at Batna 2 University according to the official grading system defined by the Algerian Ministry of Higher Education.
@@ -114,5 +112,6 @@ SOFTWARE.
 Simply open the `BATNA2_ISI_M1_CALC.html` file in any modern web browser. No installation or server required.
 
 ## Contribution
+
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
